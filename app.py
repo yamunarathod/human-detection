@@ -62,7 +62,8 @@ class Person:
         new_center = (box[0] + box[2]//2, box[1] + box[3]//2)
         self.velocity = (new_center[0] - old_center[0], new_center[1] - old_center[1])
         
-        alpha = 0.9
+        # Even more responsive smoothing for better tracking
+        alpha = 0.7  # Reduced from 0.8 for even faster response
         self.box = [
             int(alpha * box[0] + (1 - alpha) * self.box[0]),
             int(alpha * box[1] + (1 - alpha) * self.box[1]),
@@ -74,7 +75,7 @@ class Person:
         self.last_seen = time.time()
         self.thought_timer += 1
         self.bubble_animation += 0.15
-        self.missed_frames = 0
+        self.missed_frames = 0  # Reset missed frames when detected
         
         if self.thought_timer > 120:
             self.thought = random.choice(RANDOM_THOUGHTS)
@@ -85,7 +86,8 @@ class Person:
             predicted_x = self.box[0] + self.velocity[0] * self.missed_frames
             predicted_y = self.box[1] + self.velocity[1] * self.missed_frames
             
-            damping = 0.9 ** self.missed_frames
+            # Less aggressive damping for better prediction
+            damping = 0.95 ** self.missed_frames  # Increased from 0.9
             self.velocity = (self.velocity[0] * damping, self.velocity[1] * damping)
             
             return [int(predicted_x), int(predicted_y), self.box[2], self.box[3]]
@@ -148,36 +150,36 @@ def draw_oval_thought_bubble(frame, center_x, center_y, width, height, scale_fac
     # Add subtle shadow/border for depth
     cv2.ellipse(frame, (bubble_center_x, bubble_center_y), (width//2, height//2), 0, 0, 360, (200, 200, 200), 2)
     
-    # Draw thought bubble tail (two smaller circles) - made smaller
-    # First smaller circle
-    tail_size_1 = int(12 * scale_factor)  # Reduced from 44
+    # Draw thought bubble tail (two bigger circles)
+    # First smaller circle - made bigger
+    tail_size_1 = int(18 * scale_factor)  # Increased from 12
     tail_x_1 = bubble_center_x - width//6  # Adjusted position
     tail_y_1 = bubble_center_y + height//2 + int(8 * scale_factor)  # Reduced from 25
     cv2.circle(frame, (tail_x_1, tail_y_1), tail_size_1//2, (255, 255, 255), -1)
     cv2.circle(frame, (tail_x_1, tail_y_1), tail_size_1//2, (200, 200, 200), 1)
     
-    # Second smaller circle
-    tail_size_2 = int(8 * scale_factor)  # Reduced from 25
+    # Second smaller circle - made bigger
+    tail_size_2 = int(12 * scale_factor)  # Increased from 8
     tail_x_2 = bubble_center_x - width//4  # Adjusted position
     tail_y_2 = bubble_center_y + height//2 + int(16 * scale_factor)  # Reduced from 45
     cv2.circle(frame, (tail_x_2, tail_y_2), tail_size_2//2, (255, 255, 255), -1)
     cv2.circle(frame, (tail_x_2, tail_y_2), tail_size_2//2, (200, 200, 200), 1)
 
 def draw_thought_bubble(frame, x, y, text, animation_offset=0, scale_factor=1.0):
-    """Draw oval thought bubble with text - much smaller size"""
+    """Draw oval thought bubble with text - non-bold, larger font, better spacing"""
     
-    # Text properties - smaller font
+    # Text properties - increased font size and removed bold
     font = cv2.FONT_HERSHEY_SIMPLEX
-    font_scale = 0.35 * scale_factor  # Reduced from 0.4
-    font_thickness = max(1, int(1 * scale_factor))
-    line_spacing = int(12 * scale_factor)  # Reduced from 16
+    font_scale = 0.55 * scale_factor  # Increased from 0.45 for larger text
+    font_thickness = 1  # Always 1 for non-bold text
+    line_spacing = int(16 * scale_factor)  # Increased from 12 for better line height
     
-    # Much smaller padding for oval bubble
-    padding_x = int(15 * scale_factor)  # Reduced from 40
-    padding_y = int(10 * scale_factor)  # Reduced from 30
+    # Adjusted padding for larger text
+    padding_x = int(18 * scale_factor)  # Slightly increased from 15
+    padding_y = int(12 * scale_factor)  # Slightly increased from 10
     
     # Wrap text with more characters per line for smaller bubbles
-    text_lines = wrap_text(text, max_chars_per_line=25)  # Increased from 18
+    text_lines = wrap_text(text, max_chars_per_line=25)
     
     # Calculate text dimensions
     max_text_width = 0
@@ -191,23 +193,23 @@ def draw_thought_bubble(frame, x, y, text, animation_offset=0, scale_factor=1.0)
         else:
             total_text_height += line_spacing
     
-    # Calculate oval bubble dimensions - much smaller
+    # Calculate oval bubble dimensions - adjusted for larger text
     bubble_width = max_text_width + (padding_x * 2)
     bubble_height = total_text_height + (padding_y * 2)
     
-    # Much smaller constraints for oval shape
-    min_width = int(60 * scale_factor)   # Reduced from 120
-    max_width = int(180 * scale_factor)  # Reduced from 280
-    min_height = int(35 * scale_factor)  # Reduced from 80
-    max_height = int(80 * scale_factor)  # Reduced from 160
+    # Adjusted constraints for larger text
+    min_width = int(70 * scale_factor)   # Slightly increased from 60
+    max_width = int(200 * scale_factor)  # Slightly increased from 180
+    min_height = int(40 * scale_factor)  # Slightly increased from 35
+    max_height = int(90 * scale_factor)  # Slightly increased from 80
     
     bubble_width = max(min_width, min(bubble_width, max_width))
     bubble_height = max(min_height, min(bubble_height, max_height))
     
     # Animation - smaller floating effect
-    animation_y = int(2 * math.sin(animation_offset) * scale_factor)  # Reduced from 3
+    animation_y = int(2 * math.sin(animation_offset) * scale_factor)
     bubble_center_x = x
-    bubble_center_y = y - bubble_height//2 - int(25 * scale_factor) + animation_y  # Reduced from 40
+    bubble_center_y = y - bubble_height//2 - int(25 * scale_factor) + animation_y
     
     # Keep within frame bounds
     bubble_center_x = max(bubble_width//2 + 10, min(bubble_center_x, frame.shape[1] - bubble_width//2 - 10))
@@ -302,8 +304,12 @@ class PersonDetector:
     def update_people_tracking(self, detections):
         current_time = time.time()
         
+        # Increment missed frames for all people
         for person in self.people:
             person.missed_frames += 1
+        
+        # Remove people who have been missed for too many frames - even faster cleanup
+        self.people = [p for p in self.people if p.missed_frames < 8]  # Reduced from 15
         
         matched_people = set()
         
@@ -318,11 +324,12 @@ class PersonDetector:
                 compare_box = person.predict_position() if person.missed_frames > 0 else person.box
                 overlap = calculate_overlap(box, compare_box)
                 
-                if overlap > 0.25 and overlap > best_overlap:
+                # More relaxed overlap threshold for better tracking
+                if overlap > 0.15 and overlap > best_overlap:  # Reduced from 0.25
                     best_overlap = overlap
                     best_person = person
             
-            if best_person and best_overlap > 0.25:
+            if best_person and best_overlap > 0.15:  # Reduced from 0.25
                 best_person.update(box, confidence)
                 matched_people.add(self.people.index(best_person))
             else:
@@ -330,7 +337,8 @@ class PersonDetector:
                 self.people.append(new_person)
                 self.next_person_id += 1
         
-        self.people = [p for p in self.people if current_time - p.last_seen < 3.0]
+        # Remove people who haven't been seen for too long - even faster removal
+        self.people = [p for p in self.people if current_time - p.last_seen < 0.5]  # Reduced from 1.0
 
 # Initialize camera
 cap = cv2.VideoCapture(0)
