@@ -1,0 +1,234 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Oval Thought Bubble</title>
+
+    <style>
+
+        body {
+
+            background-color: orange;
+
+            display: flex;
+
+            flex-flow: row wrap;
+
+            justify-content: center;
+
+            margin: 0;
+
+            height: 100vh;
+
+            align-items: center;
+
+            align-content: center;
+
+            padding: 0 10%;
+
+        }
+
+
+
+        .thought {
+
+            display: flex;
+
+            background-color: #fff;
+
+            padding: 30px 40px;
+
+            border-radius: 50%;
+
+            min-width: 120px;
+
+            max-width: 280px;
+
+            min-height: 80px;
+
+            max-height: 160px;
+
+            margin: 20px;
+
+            position: relative;
+
+            align-items: center;
+
+            justify-content: center;
+
+            text-align: center;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 16px;
+
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+            transition: transform 0.3s ease;
+
+        }
+
+
+
+        .thought:hover {
+
+            transform: scale(1.05);
+
+        }
+
+
+
+        .thought:before,
+
+        .thought:after {
+
+            content: "";
+
+            background-color: #fff;
+
+            border-radius: 50%;
+
+            display: block;
+
+            position: absolute;
+
+            z-index: -1;
+
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+        }
+
+
+
+        .thought:before {
+
+            width: 44px;
+
+            height: 44px;
+
+            bottom: -25px;
+
+            left: 40px;
+
+        }
+
+
+
+        .thought:after {
+
+            width: 25px;
+
+            height: 25px;
+
+            bottom: -45px;
+
+            left: 25px;
+
+        }
+
+
+
+        /* Multiple thought bubbles */
+
+        .thought:nth-child(2) {
+
+            background-color: #e3f2fd;
+
+        }
+
+
+
+        .thought:nth-child(2):before,
+
+        .thought:nth-child(2):after {
+
+            background-color: #e3f2fd;
+
+        }
+
+
+
+        .thought:nth-child(3) {
+
+            background-color: #f3e5f5;
+
+        }
+
+
+
+        .thought:nth-child(3):before,
+
+        .thought:nth-child(3):after {
+
+            background-color: #f3e5f5;
+
+        }
+
+
+
+        .thought:nth-child(4) {
+
+            background-color: #e8f5e8;
+
+        }
+
+
+
+        .thought:nth-child(4):before,
+
+        .thought:nth-child(4):after {
+
+            background-color: #e8f5e8;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="thought">
+
+        I'm thinking about something amazing!
+
+    </div>
+
+    
+
+    <div class="thought">
+
+        Oval thoughts are beautiful
+
+    </div>
+
+    
+
+    <div class="thought">
+
+        CSS is fun!
+
+    </div>
+
+    
+
+    <div class="thought">
+
+        Creative designs
+
+    </div>
+
+</body>
+
+</html>
+
+
+
